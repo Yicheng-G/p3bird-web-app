@@ -35,7 +35,7 @@ def select(sql, args, size=None):
         else:
             rs = yield from cur.fetchall()
         yield from cur.close()
-        logging.info('rows returned: %s' % len(rs))
+        logging.info('rows returned: {}'.format(len(rs)))
         return rs
 
 
@@ -124,24 +124,24 @@ class ModelMetaclass(type):
             raise RuntimeError('Primary key not found.')
         for k in mappings.keys():
             attrs.pop(k)
-        escaped_fields = list(map(lambda f: '`%s`' % f, fields))
+        escaped_fields = list(map(lambda f: '`{}`'.format(f), fields))
         attrs['__mappings__'] = mappings
         attrs['__table__'] = table_name
         attrs['__primary_key__'] = primary_key
         attrs['__fields__'] = fields
-        attrs['__select__'] = 'select `%s`, %s, from %s' % (
+        attrs['__select__'] = 'select `{}`, {}, from {}'.format(
             primary_key, ', '.join(escaped_fields), table_name
         )
-        attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (
+        attrs['__insert__'] = 'insert into `{}` ({}, `{}`) values ({})'.format(
             table_name, ', '.join(escaped_fields),
             primary_key, create_args_string(len(escaped_fields) + 1)
         )
-        attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (
+        attrs['__update__'] = 'update `{}` set {} where `{}`=?'.format(
             table_name,
-            ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)),
+            ', '.join(map(lambda f: '`{}`=?'.format(mappings.get(f).name or f), fields)),
             primary_key
         )
-        attrs['__delete__'] = 'delete from `%s` where `%s`=?' % (
+        attrs['__delete__'] = 'delete from `{}` where `{}`=?'.format(
             table_name, primary_key
         )
         return type.__new__(mcs, name, bases, attrs)
@@ -155,7 +155,7 @@ class Model(dict, metaclass=ModelMetaclass):
         try:
             return self[item]
         except KeyError:
-            raise AttributeError(r"Model object has no attribute %s", item)
+            raise AttributeError(r"Model object has no attribute {}".format(item))
 
     def __setattr__(self, key, value):
         self[key] = value
@@ -197,7 +197,7 @@ class Model(dict, metaclass=ModelMetaclass):
                 sql.append('?, ?')
                 args.extend(limit)
             else:
-                raise ValueError('Invalid limit value: %s' % str(limit))
+                raise ValueError('Invalid limit value: {}'.format(str(limit)))
         rs = yield from select(' '.join(sql), args)
         return [cls(**r) for r in rs]  # cls(**r): unpack dict r, passing contents as kw args
 
@@ -208,8 +208,10 @@ class Model(dict, metaclass=ModelMetaclass):
         :param pk: primary key
         :return:
         """
-        rs = yield from select('%s where `%s`=?' %
-                               (cls.__select__, cls.primary_key), [pk], 1)
+        rs = yield from select(
+            '{} where `{}`=?'.format(cls.__select__, cls.primary_key),
+            [pk], 1
+        )
         if len(rs) == 0:
             return None
         return [cls(**rs[0])]
@@ -221,7 +223,7 @@ class Model(dict, metaclass=ModelMetaclass):
         rows = yield from execute(self.__insert__, args)
         if rows != 1:
             logging.warning(
-                'failed to insert by primary key, affected rows: %s' % rows
+                'failed to insert by primary key, affected rows: {}'.format(rows)
             )
 
     @asyncio.coroutine
@@ -231,7 +233,7 @@ class Model(dict, metaclass=ModelMetaclass):
         rows = yield from execute(self.__update__, args)
         if rows != 1:
             logging.warning(
-                'failed to update by primary key, affected rows: %s' % rows
+                'failed to update by primary key, affected rows: {}'.format(rows)
             )
 
     @asyncio.coroutine
@@ -240,5 +242,5 @@ class Model(dict, metaclass=ModelMetaclass):
         rows = yield from execute(self.__delete__, args)
         if rows != 1:
             logging.warning(
-                'failed to remove by primary key, affected rows: %s' % rows
+                'failed to remove by primary key, affected rows: {}'.format(rows)
             )
