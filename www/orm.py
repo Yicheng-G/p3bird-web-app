@@ -7,6 +7,10 @@ import asyncio, logging
 import aiomysql
 
 
+def log(sql, args=()):
+    logging.info('SQL: {}'.format(sql))
+
+
 @asyncio.coroutine
 def create_pool(loop, **kw):
     logging.info('create data base connecting pool...')
@@ -27,6 +31,7 @@ def create_pool(loop, **kw):
 
 @asyncio.coroutine
 def select(sql, args, size=None):
+    log(sql, args)
     with (yield from __pool) as conn:
         cur = yield from conn.cursor(aiomysql.DictCursor)
         yield from cur.execute(sql.replace('?', '%s'), args or ())
@@ -41,6 +46,7 @@ def select(sql, args, size=None):
 
 @asyncio.coroutine
 def execute(sql, args):
+    log(sql, args)
     with (yield from __pool) as conn:
         try:
             cur = yield from conn.cursor()
@@ -209,7 +215,7 @@ class Model(dict, metaclass=ModelMetaclass):
         :return:
         """
         rs = yield from select(
-            '{} where `{}`=?'.format(cls.__select__, cls.primary_key),
+            '{} where `{}`=?'.format(cls.__select__, cls.__primary_key__),
             [pk], 1
         )
         if len(rs) == 0:
@@ -219,7 +225,7 @@ class Model(dict, metaclass=ModelMetaclass):
     @asyncio.coroutine
     def save(self):
         args = list(map(self.get_value_or_default, self.__fields__))
-        args.append(self.get_value_or_default(self.primary_key))
+        args.append(self.get_value_or_default(self.__primary_key__))
         rows = yield from execute(self.__insert__, args)
         if rows != 1:
             logging.warning(
@@ -229,7 +235,7 @@ class Model(dict, metaclass=ModelMetaclass):
     @asyncio.coroutine
     def update(self):  # same name to dict.update, override
         args = list(map(self.get_value, self.__fields__))
-        args.append(self.get_value(self.primary_key))
+        args.append(self.get_value(self.__primary_key__))
         rows = yield from execute(self.__update__, args)
         if rows != 1:
             logging.warning(
@@ -238,7 +244,7 @@ class Model(dict, metaclass=ModelMetaclass):
 
     @asyncio.coroutine
     def remove(self):
-        args = [self.get_value(self.primary_key)]
+        args = [self.get_value(self.__primary_key__)]
         rows = yield from execute(self.__delete__, args)
         if rows != 1:
             logging.warning(
