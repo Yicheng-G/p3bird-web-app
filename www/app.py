@@ -97,6 +97,7 @@ def response_factory(app, handler):
                 )
                 resp.content_type = 'text/html;charset=utf-8'
                 return resp
+        # Is r status code? Shall one pass r by specifying the key?
         if isinstance(r, int) and 100 <= r < 600:
             return web.Response(r)
         if isinstance(r, tuple) and len(r) == 2:
@@ -126,8 +127,16 @@ def datetime_filter(t):
 
 @asyncio.coroutine
 def init(loop_):
-    app = web.Application(loop=loop_)
-    app.router.add_route('GET', '/', index)
+    yield from orm.create_pool(
+        loop=loop_, host='127.0.0.1', port=3306,
+        user='ycguo', password='', db='p3bird'
+    )
+    app = web.Application(
+        loop=loop_, middlewares=[logger_factory, response_factory]
+    )
+    init_jinja2(app, filters=dict(datetime=datetime_filter))
+    add_routes(app, 'handlers')
+    add_static(app)
     srv = yield from loop_.create_server(app.make_handler(), '127.0.0.1', 9000)
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
