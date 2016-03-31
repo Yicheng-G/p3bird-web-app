@@ -182,7 +182,7 @@ def add_routes(app, module_name):
             continue
         fn = getattr(mod, attr)
         if callable(fn):
-            method = getattr(fn, '__module', None)
+            method = getattr(fn, '__method__', None)
             path = getattr(fn, '__route__', None)
             if method and path:
                 add_route(app, fn)
