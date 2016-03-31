@@ -44,23 +44,49 @@ def post(path):
 
 
 def get_required_kwargs(fn):
-    pass
+    args = []
+    params = inspect.signature(fn).parameters
+    for name, param in params.items():
+        if param.kind == inspect.Parameter.KEYWORD_ONLY and \
+                param.default == inspect.Parameter.empty:
+            args.append(name)
+    return tuple(args)
 
 
 def get_named_kwargs(fn):
-    pass
+    args = []
+    params = inspect.signature(fn).parameters
+    for name, param in params.items():
+        if param.kind == inspect.Parameter.KEYWORD_ONLY:
+            args.append(name)
+    return tuple(args)
 
 
 def has_named_kwargs(fn):
-    pass
+    params = inspect.signature(fn).parameters
+    for name, param in params.items():
+        if param.kind == inspect.Parameter.KEYWORD_ONLY:
+            return True
 
 
 def has_var_kwargs(fn):
-    pass
+    params = inspect.signature(fn).parameters
+    for name, param in params.items():
+        if param.kind == inspect.Parameter.VAR_KEYWORD:
+            return True
 
 
 def has_request_arg(fn):
-    pass
+    sig = inspect.signature(fn)
+    params = sig.parameters
+    found = False
+    for name, param in params.items():
+        if name == 'request':
+            found = True
+            continue
+        if found and (param.kind != inspect.Parameter.VAR_POSITIONAL and param.kind != inspect.Parameter.KEYWORD_ONLY and param)
+
+
 
 
 class RequestHandler(object):
@@ -125,7 +151,7 @@ class RequestHandler(object):
         # check required kw:
         if self._required_kwargs:
             for name in self._required_kwargs:
-                if not name in kw:
+                if name not in kw:
                     return web.HTTPBadRequest(
                         'Missing argument: {}'.format(name)
                     )
