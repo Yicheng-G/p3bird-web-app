@@ -28,7 +28,7 @@ def init_jinja2(app, **kwargs):
     )
     path = kwargs.get('path', None)
     if path is None:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template')
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
     logging.info('set jinja2 template path: {}'.format(path))
     env = Environment(loader=FileSystemLoader(path), **options)
     filters = kwargs.get('filters', None)
