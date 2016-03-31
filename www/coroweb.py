@@ -84,9 +84,15 @@ def has_request_arg(fn):
         if name == 'request':
             found = True
             continue
-        if found and (param.kind != inspect.Parameter.VAR_POSITIONAL and param.kind != inspect.Parameter.KEYWORD_ONLY and param)
-
-
+        if not found:
+            continue
+        if param.kind != inspect.Parameter.VAR_POSITIONAL and \
+                param.kind != inspect.Parameter.KEYWORD_ONLY and \
+                param:
+            raise ValueError(
+                'request parameter must be the last named parameter in function'
+                ': {}{}'.format(fn.__name__, str(sig))
+            )
 
 
 class RequestHandler(object):
