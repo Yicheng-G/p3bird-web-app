@@ -135,19 +135,19 @@ class ModelMetaclass(type):
         attrs['__table__'] = table_name
         attrs['__primary_key__'] = primary_key
         attrs['__fields__'] = fields
-        attrs['__select__'] = 'select `{}`, {}, from {}'.format(
+        attrs['__select__'] = 'select `{}`, {} from {};'.format(
             primary_key, ', '.join(escaped_fields), table_name
         )
-        attrs['__insert__'] = 'insert into `{}` ({}, `{}`) values ({})'.format(
+        attrs['__insert__'] = 'insert into `{}` ({}, `{}`) values ({});'.format(
             table_name, ', '.join(escaped_fields),
             primary_key, create_args_string(len(escaped_fields) + 1)
         )
-        attrs['__update__'] = 'update `{}` set {} where `{}`=?'.format(
+        attrs['__update__'] = 'update `{}` set {} where `{}`=?;'.format(
             table_name,
             ', '.join(map(lambda f: '`{}`=?'.format(mappings.get(f).name or f), fields)),
             primary_key
         )
-        attrs['__delete__'] = 'delete from `{}` where `{}`=?'.format(
+        attrs['__delete__'] = 'delete from `{}` where `{}`=?;'.format(
             table_name, primary_key
         )
         return type.__new__(mcs, name, bases, attrs)
