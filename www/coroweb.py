@@ -93,6 +93,7 @@ def has_request_arg(fn):
                 'request parameter must be the last named parameter in function'
                 ': {}{}'.format(fn.__name__, str(sig))
             )
+    return found
 
 
 class RequestHandler(object):
