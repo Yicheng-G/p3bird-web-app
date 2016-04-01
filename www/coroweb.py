@@ -8,6 +8,7 @@ import os
 import inspect
 import logging
 import functools
+import importlib
 from urllib import parse
 from aiohttp import web
 from apis import APIError
@@ -204,12 +205,7 @@ def add_routes(app, module_name):
     :param app: application
     :param module_name: module name
     """
-    n = module_name.rfind('.')
-    if n == -1:
-        mod = __import__(module_name, globals(), locals())
-    else:
-        name = module_name[n+1:]
-        mod = getattr(__import__(module_name[:n], globals(), locals(), [name]), name)
+    mod = importlib.import_module(module_name)
     for attr in dir(mod):
         if attr.startswith('_'):
             continue
