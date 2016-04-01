@@ -32,7 +32,7 @@ $(function () {
                     return $form.showFormError('A password should have at least 6 letters');
                 }
                 if (this.password1 !== this.password2) {
-                    return $form.showFormError('The passwords don't match');
+                    return $form.showFormError('The passwords do not match');
                 }
                 var email = this.email.trim().toLowerCase();
                 $form.postJSON('/api/users', {
@@ -57,7 +57,7 @@ $(function () {
 {% block content %}
 
     <div class="uk-width-2-3">
-        <h1>欢迎注册！</h1>
+        <h1>Welcome to p3bird</h1>
         <form id="vm" v-on="submit: submit" class="uk-form uk-form-stacked">
             <div class="uk-alert uk-alert-danger uk-hidden"></div>
             <div class="uk-form-row">

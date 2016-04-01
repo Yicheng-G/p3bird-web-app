@@ -50,8 +50,9 @@ def execute(sql, args):
     with (yield from __pool) as conn:
         try:
             cur = yield from conn.cursor()
-            yield from cur.execute(sql.repalce('?', '%s'), args or ())
-            affected = cur.rowcount()
+            yield from cur.execute(sql.replace('?', '%s'), args or ())
+            affected = cur.rowcount
+            print(cur)
             yield from cur.close()
         except BaseException:
             raise
@@ -111,13 +112,13 @@ class ModelMetaclass(type):
         table_name = attrs.get('__table__', None) or name
         logging.info('find model: {} (table: {})'.format(name, table_name))
 
-        mappings = dict()
+        mapping = dict()
         fields = []
         primary_key = None
         for k, v in attrs.items():
             if isinstance(v, Field):
                 logging.info('    find mapping: {} ==> {}'.format(k, v))
-                mappings[k] = v
+                mapping[k] = v
                 if v.primary_key:
                     if primary_key:
                         raise RuntimeError(
@@ -128,26 +129,26 @@ class ModelMetaclass(type):
                     fields.append(k)
         if not primary_key:
             raise RuntimeError('Primary key not found.')
-        for k in mappings.keys():
+        for k in mapping.keys():
             attrs.pop(k)
         escaped_fields = list(map(lambda f: '`{}`'.format(f), fields))
-        attrs['__mappings__'] = mappings
+        attrs['__mapping__'] = mapping
         attrs['__table__'] = table_name
         attrs['__primary_key__'] = primary_key
         attrs['__fields__'] = fields
-        attrs['__select__'] = 'select `{}`, {} from {};'.format(
+        attrs['__select__'] = 'select `{}`, {} from {}'.format(
             primary_key, ', '.join(escaped_fields), table_name
         )
-        attrs['__insert__'] = 'insert into `{}` ({}, `{}`) values ({});'.format(
+        attrs['__insert__'] = 'insert into `{}` ({}, `{}`) values ({})'.format(
             table_name, ', '.join(escaped_fields),
             primary_key, create_args_string(len(escaped_fields) + 1)
         )
-        attrs['__update__'] = 'update `{}` set {} where `{}`=?;'.format(
+        attrs['__update__'] = 'update `{}` set {} where `{}`=?'.format(
             table_name,
-            ', '.join(map(lambda f: '`{}`=?'.format(mappings.get(f).name or f), fields)),
+            ', '.join(map(lambda f: '`{}`=?'.format(mapping.get(f).name or f), fields)),
             primary_key
         )
-        attrs['__delete__'] = 'delete from `{}` where `{}`=?;'.format(
+        attrs['__delete__'] = 'delete from `{}` where `{}`=?'.format(
             table_name, primary_key
         )
         return type.__new__(mcs, name, bases, attrs)
@@ -220,7 +221,7 @@ class Model(dict, metaclass=ModelMetaclass):
         )
         if len(rs) == 0:
             return None
-        return [cls(**rs[0])]
+        return cls(**rs[0])
 
     @asyncio.coroutine
     def save(self):

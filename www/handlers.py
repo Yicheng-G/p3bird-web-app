@@ -31,7 +31,7 @@ def user2cookie(user, max_age):
     """
     # build cookie string by: id-expires-sha1
     expires = str(int(time.time() + max_age))
-    s = '{}-%{}-{}-{}'.format(user.id, user.password, expires, _COOKIE_KEY)
+    s = '{}-{}-{}-{}'.format(user.id, user.password, expires, _COOKIE_KEY)
     L = [user.id, expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
     return '-'.join(L)
 
@@ -99,7 +99,7 @@ def authenticate(*, email, password):
         raise APIValueError('email', 'Invalid email.')
     if not password:
         raise APIValueError('password', 'Invalid password.')
-    users = yield from User.findAll('email=?', [email])
+    users = yield from User.find_all('email=?', [email])
     if len(users) == 0:
         raise APIValueError('email', 'Email not exist.')
     user = users[0]
@@ -122,6 +122,7 @@ def authenticate(*, email, password):
 @get('/sign_out')
 def sign_out(request):
     referer = request.headers.get('Referer')
+    logging.debug('sign out to: {}'.format(str(referer)))
     r = web.HTTPFound(referer or '/')
     r.set_cookie(COOKIE_NAME, '-deleted-', max_age=0, httponly=True)
     logging.info('user signed out.')
@@ -153,7 +154,7 @@ def api_register_users(*, email, name, password):
     )
     yield from user.save()
     # make session cookie:
-    r = web.Resopnse()
+    r = web.Response()
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
     user.password = '******'
     r.content_type = 'application/json'
