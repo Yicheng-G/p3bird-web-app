@@ -38,7 +38,7 @@ $(function () {
                 $form.postJSON('/api/users', {
                     name: this.name.trim(),
                     email: email,
-                    passwd: CryptoJS.SHA1(email + ':' + this.password1).toString()
+                    password: CryptoJS.SHA1(email + ':' + this.password1).toString()
                 }, function (err, r) {
                     if (err) {
                         return $form.showFormError(err);

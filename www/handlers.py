@@ -57,7 +57,7 @@ def cookie2user(cookie_str):
         if sha1 != hashlib.sha1(s.encode('utf-8')).hexdigest():
             logging.info('invalid sha1')
             return None
-        user.passwd = '******'
+        user.password = '******'
         return user
     except Exception as e:
         logging.exception(e)
@@ -92,17 +92,18 @@ def sign_in():
         '__template__': 'sign_in.html'
     }
 
+
 @post('/api/authenticate')
 def authenticate(*, email, password):
     if not email:
         raise APIValueError('email', 'Invalid email.')
     if not password:
-        raise APIValueError('passwd', 'Invalid password.')
+        raise APIValueError('password', 'Invalid password.')
     users = yield from User.findAll('email=?', [email])
     if len(users) == 0:
         raise APIValueError('email', 'Email not exist.')
     user = users[0]
-    # check passwd:
+    # check password:
     sha1 = hashlib.sha1()
     sha1.update(user.id.encode('utf-8'))
     sha1.update(b':')
@@ -112,7 +113,7 @@ def authenticate(*, email, password):
     # authenticate ok, set cookie:
     r = web.Response()
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
-    user.passwd = '******'
+    user.password = '******'
     r.content_type = 'application/json'
     r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
     return r
@@ -154,7 +155,7 @@ def api_register_users(*, email, name, password):
     # make session cookie:
     r = web.Resopnse()
     r.set_cookie(COOKIE_NAME, user2cookie(user, 86400), max_age=86400, httponly=True)
-    user.passwd = '******'
+    user.password = '******'
     r.content_type = 'application/json'
     r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
     return r
