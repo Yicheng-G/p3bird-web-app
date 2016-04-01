@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    {% block meta %?}<!-- block meta -->{% end block %}
-    <title>  {% block title %?} ? {% end block %} - p3bird web app</title>
+    {% block meta %}<!-- block meta -->{% endblock %}
+    <title>  {% block title %} ? {% endblock %} - p3bird web app</title>
     <link rel="stylesheet" href="/static/css/uikit.min.css">
     <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
     <script src="/static/js/jquery-1.12.2.min.js"></script>
@@ -23,7 +23,7 @@
                 <ul class="uk-navbar-nav">
                     {% if __user__ %}
                     <li class="uk-parent" data-uk-dropdown>
-                        <a href="#0"><i class="uk-icon-user"></i> {{ __user__.name}}</a>
+                        <a href="#0"><i class="uk-icon-user"></i> {{ __user__.name }}</a>
                         <div class="uk-dropdown uk-dropdown-navbar">
                             <ul class="uk-nav uk-nav-navbar">
                                 <li><a href="/signout"><i class="uk-icon-sign-out"></i> sign out</a></li>
@@ -31,8 +31,8 @@
                         </div>
                     </li>
                     {% else %}
-                    <li herf="/sign_in"><i class="uk-icon-sign-in"></i> sign in</li>
-                    <li herf="/register"><i class="uk-icon-sign-in"></i> register</li>
+		    <li><a herf="/sign_in"><i class="uk-icon-sign-in"></i> sign in</a></li>
+		    <li><a herf="/register"><i class="uk-icon-sign-in"></i> register</a></li>
                     {% endif %}
                 </ul>
             </div>
