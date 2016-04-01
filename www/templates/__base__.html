@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    {% block meta %?}<!-- block meta -->{% end block %}
+    <title>  {% block title %?} ? {% end block %} - p3bird web app</title>
+    <link rel="stylesheet" href="/static/css/uikit.min.css">
+    <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
+    <script src="/static/js/jquery-1.12.2.min.js"></script>
+    <script src="/static/js/uikit.min.js"></script>
+    {% block beforehead %}<!-- before head  -->{% endblock %}
+</head>
+<body>
+    <nav class="uk-navbar uk-navbar-attched uk-margin-bottom" >
+        <div class="uk-container uk-container-center">
+            <a herf="/" class="uk-navbar-brand">p3bird</a>
+            <ul class="uk-navbar-nav">
+                <li data-url="blogs"><a href="/"><i class="uk-icon-home"></i> Blog</a></li>
+                <li><a target="_blank" href="#"><i class="uk-icon-book"></i> Manual</a></li>
+                <li><a target="_blank" href="#"><i class="uk-icon-code"></i> Source</a></li>
+            </ul>
+            <div class="uk-navbar-flip">
+                <ul class="uk-navbar-nav">
+                    {% if __user__ %}
+                    <li class="uk-parent" data-uk-dropdown>
+                        <a href="#0"><i class="uk-icon-user"></i> {{ __user__.name}}</a>
+                        <div class="uk-dropdown uk-dropdown-navbar">
+                            <ul class="uk-nav uk-nav-navbar">
+                                <li><a href="/signout"><i class="uk-icon-sign-out"></i> sign out</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li herf="/sign_in"><i class="uk-icon-sign-in"></i> sign in</li>
+                    <li herf="/register"><i class="uk-icon-sign-in"></i> register</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="uk-container uk-container-center">
+        <div class="uk-grid">
+            <!-- content -->
+            {% block content %}
+            {% endblock %}
+            <!-- content -->
+        </div>
+    </div>
+
+    <div class="uk-margin-large-top" style="background-color:#eee; border-top:1px solid #ccc;">
+        <div class="uk-container uk-container-center uk-text-center">
+            <div class="uk-panel uk-margin-top uk-margin-bottom">
+                <p>
+                    <a target="_blank" href="#" class="uk-icon-button uk-icon-weibo"></a>
+                    <a target="_blank" href="#" class="uk-icon-button uk-icon-github"></a>
+                    <a target="_blank" href="#" class="uk-icon-button uk-icon-linkedin-square"></a>
+                    <a target="_blank" href="#" class="uk-icon-button uk-icon-twitter"></a>
+                </p>
+                <p>Powered by <a href="/">p3bird</a>. Copyright &copy; 2016. [<a href="/manage/" target="_blank">Manage</a>]</p>
+                <p><a href="/" target="_blank">ustclin02.cern.ch</a>. All rights reserved.</p>
+                <a target="_blank" href="http://www.w3.org/TR/html5/"><i class="uk-icon-html5" style="font-size:64px; color: #444;"></i></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
