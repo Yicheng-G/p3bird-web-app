@@ -17,6 +17,6 @@ configs = {
         'db': 'p3bird',
     },
     'session': {
-        'secret': 'Awesome'
+        'secret': 'p3bird'
     }
 }
