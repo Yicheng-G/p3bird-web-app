@@ -5,12 +5,12 @@
 {% block content %}
 
     <div class="uk-width-medium-3-4">
-        {% for blog in blogs %}
+        {% for this_blog in blog %}
         <article class="uk-article">
-            <h2><a href="/blog/{{ blog.id }}">{{ blog.name }}</a> </h2>
-            <p class="uk-article-meta">Posted at {{ blog.created_at|datetime }}</p>
-            <p>{{ blog.summary }}</p>
-            <p><a href="/blog/{{ blog.id }}">Continue Reading <i class="uk-icon-angle-double-right"></i></a></p>
+            <h2><a href="/blog/{{ this_blog.id }}">{{ this_blog.name }}</a> </h2>
+            <p class="uk-article-meta">Posted at {{ this_blog.created_at|datetime }}</p>
+            <p>{{ this_blog.summary }}</p>
+            <p><a href="/blog/{{ this_blog.id }}">Continue Reading <i class="uk-icon-angle-double-right"></i></a></p>
         </article>
         <hr class="uk-article-divider">
         {% endfor %}
