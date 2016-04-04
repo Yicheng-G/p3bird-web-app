@@ -320,7 +320,9 @@ function _httpJSON(method, url, data, callback) {
         }
         return callback(null, r);
     }).fail(function (jqXHR, textStatus) {
-        return callback({'error': 'http_bad_response', 'data': '' + jqXHR.status, 'message': '网络好像出问题了 (HTTP ' + jqXHR.status + ')'});
+        return callback({'error': 'http_bad_response',
+                         'data': '' + jqXHR.status,
+                         'message': 'Oops, the website is in trouble (HTTP ' + jqXHR.status + ')'});
     });
 }
 

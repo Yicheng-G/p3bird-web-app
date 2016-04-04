@@ -1,20 +1,91 @@
 {% extends '__base__.html' %}
 
-{% block title %}Blog{% endblock %}
+{% block title %}{{ blog.name }}{% endblock %}
+
+{% block beforehead %}
+
+<script>
+    var comment_url = '/api/blogs/{{ blog.id }}/comments';
+
+    $(function () {
+        var $form = $('#form-comment');
+        $form.submit(function(event) {
+        	event.preventDefault();
+        	$form.showFormError('');
+		content = $form.find('textarea').val().trim();
+        	if (content==='') {
+        		return $form.showFormError('Please input content.');
+        	}
+        	$form.postJSON(comment_url, {content: content}, function(err, result){
+        		if (err) {
+        			return $form.showFormError(err)
+        		}
+        		refresh();
+        	})
+        });
+    });
+</script>
+
+{% endblock %}
 
 {% block content %}
 
-    <div class="uk-width-medium-3-4">
-        {% for this_blog in blog %}
-        <article class="uk-article">
-            <h2><a href="/blog/{{ this_blog.id }}">{{ this_blog.name }}</a> </h2>
-            <p class="uk-article-meta">Posted at {{ this_blog.created_at|datetime }}</p>
-            <p>{{ this_blog.summary }}</p>
-            <p><a href="/blog/{{ this_blog.id }}">Continue Reading <i class="uk-icon-angle-double-right"></i></a></p>
-        </article>
-        <hr class="uk-article-divider">
-        {% endfor %}
-    </div>
+	<div class="uk-width-medium-3-4">
+		<article class="uk-article">
+			<h2>{{ blog.name }}</h2>
+			<p class="uk-article-meta">Posted at {{ blog.created_at|datetime }}</p>
+			<p>{{ blog.html_content|safe }}</p>
+		</article>
+
+		<hr class="uk-article-divider">
+
+		{% if __user__ %}
+
+		<h3>Make Comments</h3>
+
+		<article class="uk-comment">
+			<header class="uk-comment-header">
+				<img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{ __user__.image }}">
+				<h4 class="uk-comment-title">{{ __user__.name }}</h4>
+			</header>
+			<div class="uk-comment-body">
+				<form id="form-comment" class="uk-form">
+					<div class="uk-alert uk-alert-danger uk-hidden"></div>
+					<div class="uk-form-row">
+						<textarea rows="6" placeholder="say something" style="width: 100%; resize: none"></textarea>
+					</div>
+					<div class="uk-form-row">
+						<button type="submit" class="uk-button uk-button primary"><i class="uk-icon-comment"></i> Post</button>
+					</div>
+				</form>
+			</div>
+		</article>
+
+		<hr class="uk-article-divider">
+		
+		{% endif %}
+
+		<h3> Recent Comments</h3>
+
+		<ul class="uk-comment-list">
+			{% for comment in comments %}
+			<li>
+				<article class="uk-comment">
+					<header class="uk-comment-header">
+						<img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{ __user__.image }}">
+						<h4 class="uk-comment-title">{{ __user__.name }}</h4>
+					</header>
+					<div class="uk-comment-body">
+						{{ comment.html_content|safe }}
+					</div>
+				</article>
+			</li>
+			{% else %}
+			<p> No comments yet. Be the first one to comment!</p>
+			{% endfor %}
+		</ul>
+
+	</div>
 
     <div class="uk-width-medium-1-4">
         <div class="uk-panel uk-panel-header">

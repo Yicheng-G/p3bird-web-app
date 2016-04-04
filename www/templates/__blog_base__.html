@@ -1,0 +1,27 @@
+{% extends '__base__.html' %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-medium-3-4">
+        {% block blog_content %}
+        {% endblock %}
+    </div>
+
+    <div class="uk-width-medium-1-4">
+        <div class="uk-panel uk-panel-header">
+            <h3 class="uk-panel-title">Recommendation</h3>
+            <ul class="uk-list uk-list-line">
+                <li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="#">Programing</a></li>
+                <li><i class="uk-icon-thumbs-o-up"></i> <a target="_blank" href="#">Reading</a></li>
+                <li><i class="uk-icon-thumbs-o-up"></i> 
+                    <a target="_blank" href="http://python3-cookbook.readthedocs.org/zh_CN/latest/">Python Cookbook</a>
+                </li>
+                <li><i class="uk-icon-thumbs-o-up"></i> 
+		    <a target="_blank" href="https://github.com">GitHub</a></li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

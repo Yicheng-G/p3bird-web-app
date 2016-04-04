@@ -117,20 +117,23 @@ class RequestHandler(object):
         if self._has_var_kwargs or self._has_named_kwargs or self._required_kwargs:
             if request.method == 'POST':
                 if not request.content_type:
-                    return web.HTTPBadRequest('Missing Content-Type.')
+                    logging.error('Missing Content-Type.')
+                    return web.HTTPBadRequest
                 ct = request.content_type.lower()
                 if ct.startswith('application/json'):
                     params = yield from request.json()
                     if not isinstance(params, dict):
-                        return web.HTTPBadRequest('Json body much be a object.')
+                        logging.error('JSON body must be a object.')
+                        return web.HTTPBadRequest
                     kw = params
                 elif ct.startswith('application/x-www-from-urlencoded') or \
                         ct.startswith('multipart/form-data'):
                     params = yield from request.post()
                 else:
-                    return web.HTTPBadRequest(
+                    logging.error(
                         'Unsupported Content-Type: {}'.format(request.content_type)
                     )
+                    return web.HTTPBadRequest
             if request.method == 'GET':
                 qs = request.query_string
                 if qs:
@@ -141,28 +144,29 @@ class RequestHandler(object):
             kw = dict(**request.match_info)
         else:
             if not self._has_var_kwargs and self._named_kwargs:
-                # remove all unnamed kw:
+                # remove all unnamed kwargs:
                 copy = dict()
                 for name in self._named_kwargs:
                     if name in kw:
                         copy[name] = kw[name]
                 kw = copy
-            # check named arg:
+            # check named args:
             for k, v in request.match_info.items():
                 if k in kw:
                     logging.warning(
-                        'Duplicate arg name in named arg and kw args: {}'.format(k)
+                        'Duplicated arg name in named args and kwargs: {}'.format(k)
                     )
-                    kw[k] = v
+                kw[k] = v
         if self._has_request_arg:
             kw['request'] = request
         # check required kw:
         if self._required_kwargs:
             for name in self._required_kwargs:
                 if name not in kw:
-                    return web.HTTPBadRequest(
-                        'Missing argument: {}'.format(name)
+                    logging.error(
+                        'Missing argument: {} is not found in {}'.format(name, kw)
                     )
+                    return web.HTTPBadRequest
         logging.info('call with args: {}'.format(str(kw)))
         try:
             r = yield from self._func(**kw)

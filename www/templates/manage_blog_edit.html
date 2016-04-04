@@ -15,24 +15,25 @@
             data: blog,
             methods: {
                 submit: function (event) {
-                    var $form = $('vm').find('form');
-                    $form.postJOSN(action, this.$data, function (err, r) {
+                    var $form = $('#vm').find('form');
+                    $form.postJSON(action, this.$data, function (err, r) {
                         if (err) {
                             $form.showFormError(err);
                         }
                         else {
-                            return.location.assign('/api/blog/' + r.id);
+                            return location.assign('/manage/blogs');
                         }
                     });
                 }
             }
         });
         $('#vm').show()
+    };
 
 
     $(function () {
         if (ID) {
-            getJSON('/api/blog/' + ID, function (err, blog) {
+            getJSON('/api/blogs/' + ID, function (err, blog) {
                 if (err) {
                     return fatal(err);
                 }
@@ -59,7 +60,7 @@
         <div class="uk-panel uk-panel-box">
             <ul class="uk-breadcrumb">
                 <li><a href="/manage/comments">Comments</a></li>
-                <li><a href="/manage/blog">Blog</a></li>
+                <li><a href="/manage/blogs">Blogs</a></li>
                 <li><a href="/manage/users">Users</a></li>
             </ul>
         </div>
@@ -97,7 +98,7 @@
             </div>
             <div class="uk-form-row">
                 <button type="submit" class="uk-button uk-button-primary"><i class="uk-icon-save"></i> Save</button>
-                <a href="/manage/blog" class="uk-button"><i class="uk-icon-times"></i> Cancel</a>
+                <a href="/manage/blogs" class="uk-button"><i class="uk-icon-times"></i> Cancel</a>
             </div>
         </form>
     </div>
