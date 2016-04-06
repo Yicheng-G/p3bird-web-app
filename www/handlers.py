@@ -196,6 +196,14 @@ def manage_comments(*, page='1'):
     }
 
 
+@get('/manage/users')
+def manage_users(*, page='1'):
+    return {
+        '__template__': 'manage_users.html',
+        'page_index': get_page_index(page)
+    }
+
+
 @get('/manage/blogs')
 def manage_blogs(*, page='1'):
     return {
@@ -232,7 +240,7 @@ def api_comments(*, page='1'):
     num = yield from Comment.find_number('count(id)')
     p = Page(num, page_index)
     if num == 0:
-        return dict(page=p,comments=())
+        return dict(page=p, comments=())
     comments = yield from Comment.find_all(
             orderBy='created_at desc', limit=(p.offset, p.limit)
             )
@@ -265,6 +273,19 @@ def api_delete_comment(request, *, id):
     return dict(id=id)
 
 
+@get('/api/users')
+def api_comments(*, page='1'):
+    page_index = get_page_index(page)
+    num = yield from User.find_number('count(id)')
+    p = Page(num, page_index)
+    if num == 0:
+        return dict(page=p, users=())
+    users = yield from User.find_all(
+            orderBy='created_at desc', limit=(p.offset, p.limit)
+            )
+    return dict(page=p, users=users)
+
+
 @post('/api/users')
 def api_register_users(*, email, name, password):
     if not name or not name.strip():
@@ -292,6 +313,14 @@ def api_register_users(*, email, name, password):
     r.content_type = 'application/json'
     r.body = json.dumps(user, ensure_ascii=False).encode('utf-8')
     return r
+
+
+@post('/api/users/{id}/delete')
+def api_delete_user(request, *, id):
+    check_admin(request)
+    user = yield from User.find(id)
+    yield from user.remove()
+    return dict(id=id)
 
 
 @get('/api/blogs')
