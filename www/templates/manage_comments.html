@@ -16,7 +16,7 @@ function initVM(data_) {
             edit_comment: function (comment) {
                 location.assign('/manage/comments/edit?id=' + blog.id);
             },
-            delete_comment: function (blog) {
+            delete_comment: function (comment) {
                 if (confirm('Are you sure you want to permanently delete "' + comment.name + '"?')) {
                     postJSON('/api/comments/' + comment.id + '/delete', function (err, r) {
                         if (err) {
@@ -74,9 +74,9 @@ $(function() {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="comment in commentss" >
+                <tr v-for="comment in comments" >
                     <td>
-                        <a target="_blank" :href="'/blogs/'+comment.blog_id" v-text="comment.name"></a>
+                        <a target="_blank" :href="'/blogs/'+comment.blog_id" v-text="comment.content"></a>
                     </td>
                     <td>
                         <a target="_blank" :href="'/users/'+comment.user_id" v-text="comment.user_name"></a>
@@ -86,7 +86,7 @@ $(function() {
                     </td>
                     <td>
                         <!-- <a href="#0" @click="edit_blog(blog)"><i class="uk-icon-edit"></i> -->
-                        <a href="#0" @click="delete_comment(blog)"><i class="uk-icon-trash-o"></i>
+                        <a href="#0" @click="delete_comment(comment)"><i class="uk-icon-trash-o"></i>
                     </td>
                 </tr>
             </tbody>

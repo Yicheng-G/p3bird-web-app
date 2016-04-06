@@ -189,7 +189,7 @@ def sign_out(request):
 
 
 @get('/manage/comments')
-def manage_blogs(*, page='1'):
+def manage_comments(*, page='1'):
     return {
         '__template__': 'manage_comments.html',
         'page_index': get_page_index(page)
@@ -224,6 +224,19 @@ def manage_edit_blog(*, id):
 
 _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$')
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
+
+
+@get('/api/comments')
+def api_comments(*, page='1'):
+    page_index = get_page_index(page)
+    num = yield from Comment.find_number('count(id)')
+    p = Page(num, page_index)
+    if num == 0:
+        return dict(page=p,comments=())
+    comments = yield from Comment.find_all(
+            orderBy='created_at desc', limit=(p.offset, p.limit)
+            )
+    return dict(page=p, comments=comments)
 
 
 @post('/api/blogs/{id}/comments')
