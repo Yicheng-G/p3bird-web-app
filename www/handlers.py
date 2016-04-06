@@ -188,6 +188,11 @@ def sign_out(request):
     return r
 
 
+@get('/manage')
+def manage():
+    return 'redirect:/manage/comments'
+
+
 @get('/manage/comments')
 def manage_comments(*, page='1'):
     return {
@@ -274,7 +279,7 @@ def api_delete_comment(request, *, id):
 
 
 @get('/api/users')
-def api_comments(*, page='1'):
+def api_users(*, page='1'):
     page_index = get_page_index(page)
     num = yield from User.find_number('count(id)')
     p = Page(num, page_index)
