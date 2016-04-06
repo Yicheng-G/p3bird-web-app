@@ -74,7 +74,7 @@ $(function() {
                 <tr v-for="user in users" >
                     <td>
                         <span v-text="user.name"></span>
-                        <sapn v-if="user.admin" style="color:#d05"><i class="uk-icon-key"></i> 管理员</sapn>
+                        <span v-if="user.admin" style="color:#d05"><i class="uk-icon-key"></i> Admin</span>
                     </td>
                     <td>
                         <a :href="'mailto:'+user.email" v-text="user.email"></a>
@@ -83,7 +83,7 @@ $(function() {
                         <span v-text="user.created_at.toDateTime()"></span>
                     </td>
                     <td>
-                        <a href="#0" @click="delete_user(user)"><i class="uk-icon-trash-o"></i></a>
+                        <a v-if="!user.admin" :href="#0" @click="delete_user(user)"><i class="uk-icon-trash-o"></i></a>
                     </td>
                 </tr>
             </tbody>
