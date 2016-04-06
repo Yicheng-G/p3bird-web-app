@@ -143,9 +143,12 @@ def register():
 
 
 @get('/sign_in')
-def sign_in():
+def sign_in(request):
+    referer = request.headers.get('Referer')
+    logging.debug('sign in from: {}'.format(str(referer)))
     return {
-        '__template__': 'sign_in.html'
+        '__template__': 'sign_in.html',
+        'referer': referer or '/'
     }
 
 

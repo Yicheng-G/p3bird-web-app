@@ -3,7 +3,7 @@
 
 __author__ = 'Yicheng Guo'
 
-import logging; logging.basicConfig(level=logging.INFO)
+import logging; logging.basicConfig(level=logging.DEBUG)
 import asyncio, os, json, time
 from datetime import datetime
 from aiohttp import web

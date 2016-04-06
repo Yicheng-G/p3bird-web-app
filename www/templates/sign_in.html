@@ -11,31 +11,34 @@
     <script src="/static/js/vue.min.js"></script>
     <script src="/static/js/awesome.js"></script>
     <script>
-$(function() {
-    var vmAuth = new Vue({
-        el: '#vm',
-        data: {
-            email: '',
-            password: ''
-        },
-        methods: {
-            submit: function(event) {
-                var
-                    $form = $('#vm'),
-                    email = this.email.trim().toLowerCase(),
-                    data = {
-                        email: email,
-                        password: this.password==='' ? '' : CryptoJS.SHA1(email + ':' + this.password).toString()
-                    };
-                $form.postJSON('/api/authenticate', data, function(err, result) {
-                    if (! err) {
-                        location.assign('/');
-                    }
-                });
+
+    var referer = '{{ referer }}';
+
+    $(function() {
+        var vmAuth = new Vue({
+            el: '#vm',
+            data: {
+                email: '',
+                password: ''
+            },
+            methods: {
+                submit: function(event) {
+                    var
+                        $form = $('#vm'),
+                        email = this.email.trim().toLowerCase(),
+                        data = {
+                            email: email,
+                            password: this.password==='' ? '' : CryptoJS.SHA1(email + ':' + this.password).toString()
+                        };
+                    $form.postJSON('/api/authenticate', data, function(err, result) {
+                        if (! err) {
+                            location.assign(referer);
+                        }
+                    });
+                }
             }
-        }
+        });
     });
-});
     </script>
 </head>
 <body class="uk-height-1-1">
