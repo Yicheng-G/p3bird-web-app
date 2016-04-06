@@ -188,6 +188,14 @@ def sign_out(request):
     return r
 
 
+@get('/manage/comments')
+def manage_blogs(*, page='1'):
+    return {
+        '__template__': 'manage_comments.html',
+        'page_index': get_page_index(page)
+    }
+
+
 @get('/manage/blogs')
 def manage_blogs(*, page='1'):
     return {
@@ -234,6 +242,14 @@ def api_create_comment(id, request, *, content):
     )
     yield from comment.save()
     return comment
+
+
+@post('/api/comments/{id}/delete')
+def api_delete_comment(request, *, id):
+    check_admin(request)
+    comment = yield from Comment.find(id)
+    yield from comment.remove()
+    return dict(id=id)
 
 
 @post('/api/users')
