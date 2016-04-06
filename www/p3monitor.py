@@ -7,7 +7,7 @@ import sys
 import os
 import time
 import subprocess
-from watchdog.observes import Observer
+from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 
@@ -42,8 +42,8 @@ def kill_process():
 
 def start_process():
     global process, command
-    log('Start process {}'.format(process))
-    subprocess.Popen(
+    log('Start process {}'.format(' '.join(command)))
+    process = subprocess.Popen(
         command, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr
     )
 
@@ -75,12 +75,8 @@ if __name__ == '__main__':
         print ('Usage: ./p3monitor your-script.py')
         exit(0)
     if argv[0] != 'python3':
-        argv.add('python3')
+        argv.insert(0, 'python3')
     command = argv
     path = os.path.abspath(os.path.dirname(__file__))
     start_watch(path, None)
-
-
-
-
 
