@@ -79,7 +79,7 @@ $(function() {
                         <a target="_blank" :href="'/blogs/'+comment.blog_id" v-text="comment.content"></a>
                     </td>
                     <td>
-                        <a target="_blank" :href="'/users/'+user.id" v-text="user.name"></a>
+                        <a target="_blank" :href="'/users/'+comment.user_id" v-text="comment.user_name"></a>
                     </td>
                     <td>
                         <span v-text="comment.created_at.toDateTime()"></span>
