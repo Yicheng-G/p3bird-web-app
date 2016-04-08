@@ -1,21 +1,57 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>A Simple Page with CKEditor</title>
-        <!-- Make sure the path to CKEditor is correct. -->
-        <script src="/static/ckeditor/ckeditor.js"></script>
-    </head>
-    <body>
-        <form>
-            <textarea id="editor1" rows="10" cols="80">
-                This is my textarea to be replaced with CKEditor.
-            </textarea>
-            <script>
-                // Replace the <textarea id="editor1"> with a CKEditor
-                // instance, using default configuration.
-                CKEDITOR.replace( 'editor1' );
-            </script>
-        </form>
-    </body>
-</html>
+{% extends '__base__.html' %}
+
+{% block title %} Test Page {% endblock %}
+
+{% block beforehead %}
+
+<script>
+
+new Vue({
+  el: '#editor',
+  data: {
+    input: '# hello'
+  },
+  filters: {
+    marked: marked
+  }
+})
+
+</script>
+
+<style>
+
+    textarea, #editor div {
+      display: inline-block;
+      width: 49%;
+      height: 100%;
+      vertical-align: top;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 0 20px;
+    }
+    
+    textarea {
+      border: none;
+      border-right: 1px solid #ccc;
+      resize: none;
+      outline: none;
+      background-color: #f6f6f6;
+      font-size: 14px;
+      font-family: 'Monaco', courier, monospace;
+      padding: 20px;
+    }
+    
+    code {
+      color: #f66;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div id="editor">
+  <textarea v-model="input" debounce="300"></textarea>
+  <div v-html="input | marked"></div>
+</div>
+{% endblock %}
