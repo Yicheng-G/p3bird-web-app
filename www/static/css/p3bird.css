@@ -1,0 +1,51 @@
+
+/* p3bird markdown editor
+usage:
+    <div class="pb-editor">
+       <textarea> </textarea>
+       <div> <div>
+    <div>
+*/
+
+.pb-editor {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  resize: none;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  background-color: #f2f2f2;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.pb-editor textarea,
+.pb-editor div {
+  position: relative;
+  display: inline-block;
+  width: 49%;
+  height: 100%;
+  border: none;
+  vertical-align: top;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 20px;
+}
+
+.pb-editor textarea {
+  border-right: 1px solid #ccc;
+  resize: inherit;
+  outline: none;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: 'Monaco', courier, monospace;
+}
+
+.pb-editor div {
+  overflow: scroll;
+  resize: inhert;
+  outline: none;
+}
