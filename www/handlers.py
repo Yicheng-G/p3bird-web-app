@@ -188,6 +188,11 @@ def sign_out(request):
     return r
 
 
+@get('/test_page')
+def test_page(request):
+    return {'__template__': 'test.html'}
+
+
 @get('/manage')
 def manage():
     return 'redirect:/manage/comments'
