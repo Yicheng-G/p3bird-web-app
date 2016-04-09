@@ -34,7 +34,8 @@
 		<article class="uk-article">
 			<h2>{{ blog.name }}</h2>
 			<p class="uk-article-meta">Posted at {{ blog.created_at|datetime }}</p>
-			<p>{{ blog.html_content|safe }}</p>
+			<p> {{ blog.html_content|safe }}</p>
+
 		</article>
 
 		<hr class="uk-article-divider">

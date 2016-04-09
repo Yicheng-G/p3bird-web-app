@@ -12,10 +12,14 @@
     function initVM (blog) {
         var vm = new Vue({
             el: '#vm',
-            data: blog,
+	    data: blog,
+	    filters: {
+	    	marked: marked
+            },
             methods: {
                 submit: function (event) {
                     var $form = $('#vm').find('form');
+		    this.$set('html_content', marked(this.content))
                     $form.postJSON(action, this.$data, function (err, r) {
                         if (err) {
                             $form.showFormError(err);
@@ -29,7 +33,6 @@
         });
         $('#vm').show()
     };
-
 
     $(function () {
         if (ID) {
@@ -49,6 +52,9 @@
                 content: ''
             });
         }
+        var div_height = $(".pb-editor").innerHeight();
+        $('.pb-editor div').height(div_height);
+        $('.pb-editor textarea').height(div_height);
     });
 
 </script>
@@ -73,7 +79,7 @@
         <span><i class="uk-icon-spinner uk-icon-medium uk-icon-spin"></i> Loading...</span>
     </div>
 
-    <div id="vm" class="uk-width-2-3">
+    <div id="vm" class="uk-width-3-3">
         <form v-on:submit.prevent="submit" class="uk-form uk-form-stacked">
             <div class="uk-alert uk-alert-danger uk-hidden"></div>
             <div class="uk-form-row">
@@ -91,9 +97,10 @@
             </div>
             <div class="uk-form-row">
                 <label class="uk-form-label">Content:</label>
-                <div class="uk-form-controls">
-                    <textarea v-model="content" rows="16" name="content"
+                <div class="uk-form-controls pb-editor">
+                    <textarea v-model="content" rows="24" name="content"
                               placeholder="content" class="uk-width-1-1" style="resize:none;"></textarea>
+		    <div v-html="content | marked"></div>
                 </div>
             </div>
             <div class="uk-form-row">

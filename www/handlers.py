@@ -15,7 +15,6 @@ import logging
 import hashlib
 import base64
 import asyncio
-import markdown2
 from aiohttp import web
 from apis import Page, APIError, APIValueError, APIPermissionError, APIResourceNotFoundError
 from coroweb import get, post
@@ -127,7 +126,6 @@ def get_blog(id):
             'blog_id=?', [id], orderBy='created_at desc')
     for comment in comments:
         comment.html_content = text2html(comment.content)
-    blog.html_content = markdown2.markdown(blog.content)
     return {
         '__template__': 'blog.html',
         'blog': blog,
@@ -258,7 +256,7 @@ def api_comments(*, page='1'):
 
 
 @post('/api/blogs/{id}/comments')
-def api_create_comment(id, request, *, content):
+def api_create_comment(id, request, *, content, html_content):
     user = request.__user__
     if user is None:
         raise APIPermissionError('Please signin first.')
@@ -269,7 +267,8 @@ def api_create_comment(id, request, *, content):
         raise APIResourceNotFoundError('Blog')
     comment = Comment(
         blog_id=blog.id, user_id=user.id, user_name=user.name, 
-        user_image=user.image, content=content.strip()
+        user_image=user.image, content=content.strip(),
+        html_content=html_content.strip()
     )
     yield from comment.save()
     return comment
@@ -353,7 +352,7 @@ def api_get_blog(*, id):
 
 
 @post('/api/blogs')
-def api_create_blog(request, *, name, summary, content):
+def api_create_blog(request, *, name, summary, content, html_content):
     check_admin(request)
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
@@ -364,14 +363,15 @@ def api_create_blog(request, *, name, summary, content):
     blog = Blog(
         user_id=request.__user__.id, user_name=request.__user__.name,
         user_image=request.__user__.image, name=name.strip(),
-        summary=summary.strip(), content=content.strip()
+        summary=summary.strip(), content=content.strip(),
+        html_content=html_content.strip()
     )
     yield from blog.save()
     return blog
 
 
 @post('/api/blogs/{id}')
-def api_update_blog(request, *, id, name, summary, content):
+def api_update_blog(request, *, id, name, summary, content, html_content):
     check_admin(request)
     if not name or not name.strip():
         raise APIValueError('name', 'name cannot be empty.')
@@ -383,6 +383,7 @@ def api_update_blog(request, *, id, name, summary, content):
     blog.name = name.strip()
     blog.summary = summary.strip()
     blog.content = content.strip()
+    blog.html_content = html_content.strip()
     yield from blog.update()
     return blog
 
