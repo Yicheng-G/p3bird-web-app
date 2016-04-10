@@ -1,9 +1,43 @@
+/* base html layout, keep footer on the bottom */
+/* body is 100% of view port at least */
+body {
+    height: 100vh;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* wrapper keeps 100% of body; 
+   magrin-bottom is minus height of footer,
+   so footer could be embedded in the bottom of body */
+#wrapper {
+    min-height: 100%;
+    margin: 0 auto -90px;
+}
+
+/* main is the block to put body content.
+   padding-bottom is set to the height of footer to avoide overlap. */
+#main {
+    overflow:auto;
+    padding-bottom: 90px;
+}
+
+/* here comes the footer.
+   margin-top is set to the minus value of footer's height. */
+#footer {
+    position: relative;
+    height: 90px;
+    margin-top: -90px;
+    padding-bottom: 10px;
+    clear:both;
+}    
+
 
 /* p3bird markdown editor
-usage:
+   usage:
     <div class="pb-editor">
-       <textarea> </textarea>
-       <div> <div>
+       <textarea v-model="content"> </textarea>
+       <div html="content | marked"> <div>
     <div>
 */
 

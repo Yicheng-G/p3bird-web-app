@@ -6,60 +6,7 @@
     <title>  {% block title %} ? {% endblock %} - p3bird web app</title>
     <link rel="stylesheet" href="/static/css/uikit.min.css">
     <link rel="stylesheet" href="/static/css/uikit.gradient.min.css">
-    <link rel="stylesheet" href="/static/css/p3bird.css">
-    <script src="/static/js/jquery-1.12.2.min.js"></script>
-    <script src="/static/js/sha1.min.js"></script>
-    <script src="/static/js/uikit.min.js"></script>
-    <script src="/static/js/sticky.min.js"></script>
-    <script src="/static/js/vue.min.js"></script>
-    <script src="/static/js/awesome.js"></script>
-    <script src="/static/js/marked.min.js"></script>
-    <!--[if lt IE 9]>
-       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <style type="text/css">
-    /* base html layout, keep footer on the bottom */
-
-        /* body is 100% of view port at least */
-        body {
-            height: 100vh;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* wrapper keeps 100% of body; 
-           magrin-bottom is minus height of footer,
-           so footer could be embedded in the bottom of body
-        */
-        #wrapper {
-            min-height: 100%;
-            margin: 0 auto -90px;
-        }
-
-        /* main is the block to put body content.
-           padding-bottom is set to the height of footer to avoide overlap.
-        */
-        #main {
-            overflow:auto;
-            padding-bottom: 90px;
-        }
-
-
-        /* here comes the footer.
-           margin-top is set to the minus value of footer's height.
-        */
-        #footer {
-            position: relative;
-            height: 90px;
-            margin-top: -90px;
-            padding-bottom: 10px;
-            clear:both;
-        }    
-
-    </style>
-
+    <link rel="stylesheet" href="/static/css/p3bird.min.css">
     {% block beforehead %}<!-- before head  -->{% endblock %}
 </head>
 
@@ -120,6 +67,22 @@
             </div>
         </div>
     </footer>
+
+    <script src="/static/js/jquery-1.12.2.min.js"></script>
+    <script src="/static/js/sha1.min.js"></script>
+    <script src="/static/js/uikit.min.js"></script>
+    <script src="/static/js/sticky.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/awesome.min.js"></script>
+    <script src="/static/js/marked.min.js"></script>
+    <!--[if lt IE 9]>
+       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- js scripts -->
+    {% block scripts %}
+    {% endblock %}
+    <!-- js scripts -->
 
 </body>
 </html>

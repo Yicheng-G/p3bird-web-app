@@ -2,7 +2,7 @@
 
 {% block title %}{{ blog.name }}{% endblock %}
 
-{% block beforehead %}
+{% block scripts %}
 
 <script>
     var comment_url = '/api/blogs/{{ blog.id }}/comments';
@@ -12,7 +12,7 @@
         $form.submit(function(event) {
         	event.preventDefault();
         	$form.showFormError('');
-		content = $form.find('textarea').val().trim();
+			content = $form.find('textarea').val().trim();
         	if (content==='') {
         		return $form.showFormError('Please input content.');
         	}
